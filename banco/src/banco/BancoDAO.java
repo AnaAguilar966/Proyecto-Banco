@@ -1,0 +1,256 @@
+package banco;
+
+import java.sql.*;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BancoDAO {
+
+    public void registrarCliente(cliente c) {
+        String sql = "INSERT INTO cliente(nombre, telefono, correo) VALUES (?, ?, ?)";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, c.getNombre());
+            ps.setString(2, c.getTelefono());
+            ps.setString(3, c.getCorreo());
+            ps.executeUpdate();
+
+            System.out.println("Cliente registrado correctamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error al registrar cliente: " + e.getMessage());
+        }
+    }
+
+    public void crearCuenta(int idCliente, String numeroCuenta, double saldo) {
+        String sql = "INSERT INTO cuenta_ahorro(id_cliente, numero_cuenta, saldo) VALUES (?, ?, ?)";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idCliente);
+            ps.setString(2, numeroCuenta);
+            ps.setDouble(3, saldo);
+            ps.executeUpdate();
+
+            System.out.println("Cuenta creada correctamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error al crear cuenta: " + e.getMessage());
+        }
+    }
+
+    public boolean iniciarSesion(String numeroCuenta) {
+        String sql = "SELECT * FROM cuenta_ahorro WHERE numero_cuenta = ?";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, numeroCuenta);
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            System.out.println("Error al iniciar sesión: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public int obtenerIdCuenta(String numeroCuenta) {
+        String sql = "SELECT id_cuenta FROM cuenta_ahorro WHERE numero_cuenta = ?";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, numeroCuenta);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id_cuenta");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return -1;
+    }
+
+    public void depositar(int idCuenta, double monto) {
+        if (monto <= 0) {
+            System.out.println("El monto debe ser mayor a 0.");
+            return;
+        }
+
+        String sql = "UPDATE cuenta_ahorro SET saldo = saldo + ? WHERE id_cuenta = ?";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setDouble(1, monto);
+            ps.setInt(2, idCuenta);
+            ps.executeUpdate();
+
+            registrarMovimiento(idCuenta, "Depósito", monto);
+            System.out.println("Depósito realizado.");
+
+        } catch (Exception e) {
+            System.out.println("Error al depositar: " + e.getMessage());
+        }
+    }
+
+    public void retirar(int idCuenta, double monto) {
+        double saldo = consultarSaldo(idCuenta);
+
+        if (monto <= 0) {
+            System.out.println("El monto debe ser mayor a 0.");
+            return;
+        }
+
+        if (monto > saldo) {
+            System.out.println("Saldo insuficiente.");
+            return;
+        }
+
+        String sql = "UPDATE cuenta_ahorro SET saldo = saldo - ? WHERE id_cuenta = ?";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setDouble(1, monto);
+            ps.setInt(2, idCuenta);
+            ps.executeUpdate();
+
+            registrarMovimiento(idCuenta, "Retiro", monto);
+            System.out.println("Retiro realizado.");
+
+        } catch (Exception e) {
+            System.out.println("Error al retirar: " + e.getMessage());
+        }
+    }
+
+    public double consultarSaldo(int idCuenta) {
+        String sql = "SELECT saldo FROM cuenta_ahorro WHERE id_cuenta = ?";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idCuenta);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("saldo");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al consultar saldo: " + e.getMessage());
+        }
+
+        return 0;
+    }
+
+    public void solicitarCredito(int idCuenta, double monto) {
+        String sql = "INSERT INTO credito(id_cuenta, monto, saldo_pendiente, estado) VALUES (?, ?, ?, ?)";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idCuenta);
+            ps.setDouble(2, monto);
+            ps.setDouble(3, monto);
+            ps.setString(4, "Activo");
+            ps.executeUpdate();
+
+            System.out.println("Crédito solicitado correctamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error al solicitar crédito: " + e.getMessage());
+        }
+    }
+
+    public void pagarCredito(int idCuenta, double pago) {
+        String sql = "UPDATE credito SET saldo_pendiente = saldo_pendiente - ? WHERE id_cuenta = ? AND estado = 'Activo'";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setDouble(1, pago);
+            ps.setInt(2, idCuenta);
+            ps.executeUpdate();
+
+            System.out.println("Pago de crédito realizado.");
+
+        } catch (Exception e) {
+            System.out.println("Error al pagar crédito: " + e.getMessage());
+        }
+    }
+
+    public void eliminarCuenta(int idCuenta) {
+        String sql = "DELETE FROM cuenta_ahorro WHERE id_cuenta = ?";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idCuenta);
+            ps.executeUpdate();
+
+            System.out.println("Cuenta eliminada correctamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error al eliminar cuenta: " + e.getMessage());
+        }
+    }
+
+    public void registrarMovimiento(int idCuenta, String tipo, double monto) {
+        String sql = "INSERT INTO movimientos(id_cuenta, tipo, monto) VALUES (?, ?, ?)";
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idCuenta);
+            ps.setString(2, tipo);
+            ps.setDouble(3, monto);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println("Error al registrar movimiento: " + e.getMessage());
+        }
+    }
+
+    public void exportarCuentasTXT() {
+        String sql = "SELECT * FROM cuenta_ahorro";
+
+        List<String> cuentas = new ArrayList<>();
+
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String linea = "ID Cuenta: " + rs.getInt("id_cuenta")
+                        + ", Cliente: " + rs.getInt("id_cliente")
+                        + ", Número: " + rs.getString("numero_cuenta")
+                        + ", Saldo: " + rs.getDouble("saldo");
+
+                cuentas.add(linea);
+            }
+
+            FileWriter fw = new FileWriter("cuentas_banco.txt");
+
+            for (String cuenta : cuentas) {
+                fw.write(cuenta + "\n");
+            }
+
+            fw.close();
+
+            System.out.println("Archivo TXT generado correctamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error al exportar: " + e.getMessage());
+        }
+    }
+}
