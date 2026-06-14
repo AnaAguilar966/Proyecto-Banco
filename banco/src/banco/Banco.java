@@ -13,19 +13,19 @@ public class Banco {
 
         do {
             System.out.println("\n===== BANCO =====");
-            System.out.println("1. Iniciar sesión");
+            System.out.println("1. Iniciar sesion");
             System.out.println("2. Registrar cliente");
             System.out.println("3. Crear cuenta");
-            System.out.println("4. Exportar cuentas a TXT");
+            System.out.println("4. Exportar cuentas en TXT");
             System.out.println("5. Salir");
-            System.out.print("Elige una opción: ");
+            System.out.print("Elige una opcion: ");
             opcion = entrada.nextInt();
             entrada.nextLine();
 
             switch (opcion) {
 
                 case 1:
-                    System.out.print("Ingresa tu número de cuenta: ");
+                    System.out.print("Ingresa tu numero de cuenta: ");
                     String numeroCuenta = entrada.nextLine();
 
                     if (dao.iniciarSesion(numeroCuenta)) {
@@ -40,7 +40,7 @@ public class Banco {
                     System.out.print("Nombre del cliente: ");
                     String nombre = entrada.nextLine();
 
-                    System.out.print("Teléfono: ");
+                    System.out.print("Telefono: ");
                     String telefono = entrada.nextLine();
 
                     System.out.print("Correo: ");
@@ -55,7 +55,7 @@ public class Banco {
                     int idCliente = entrada.nextInt();
                     entrada.nextLine();
 
-                    System.out.print("Número de cuenta: ");
+                    System.out.print("Numero de cuenta: ");
                     String numCuenta = entrada.nextLine();
 
                     System.out.print("Saldo inicial: ");
@@ -69,11 +69,11 @@ public class Banco {
                     break;
 
                 case 5:
-                    System.out.println("Saliendo del sistema...");
+                    System.out.println("Saliendo");
                     break;
 
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opcion no valida.");
             }
 
         } while (opcion != 5);
@@ -84,15 +84,15 @@ public class Banco {
         int opcion;
 
         do {
-            System.out.println("\n===== MENÚ DE CUENTA =====");
+            System.out.println("\n===== MENU DE CUENTA =====");
             System.out.println("1. Depositar dinero");
             System.out.println("2. Retirar dinero");
-            System.out.println("3. Solicitar crédito");
-            System.out.println("4. Pagar crédito");
+            System.out.println("3. Solicitar credito");
+            System.out.println("4. Pagar credito");
             System.out.println("5. Consultar saldo");
             System.out.println("6. Eliminar cuenta");
             System.out.println("7. Salir");
-            System.out.print("Elige una opción: ");
+            System.out.print("Elige una opcion: ");
             opcion = entrada.nextInt();
 
             switch (opcion) {
@@ -110,7 +110,7 @@ public class Banco {
                     break;
 
                 case 3:
-                    System.out.print("Monto del crédito: ");
+                    System.out.print("Monto del credito: ");
                     double credito = entrada.nextDouble();
                     dao.solicitarCredito(idCuenta, credito);
                     break;
@@ -123,7 +123,7 @@ public class Banco {
 
                 case 5:
                     double saldo = dao.consultarSaldo(idCuenta);
-                    System.out.println("Saldo actual: $" + saldo);
+                    System.out.println("Saldo actual:" + saldo);
                     break;
 
                 case 6:
@@ -132,11 +132,11 @@ public class Banco {
                     break;
 
                 case 7:
-                    System.out.println("Regresando al menú principal...");
+                    System.out.println("Regresar al menu principal");
                     break;
 
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opcion no valida.");
             }
 
         } while (opcion != 7);

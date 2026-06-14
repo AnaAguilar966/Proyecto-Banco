@@ -55,7 +55,7 @@ public class BancoDAO {
             return rs.next();
 
         } catch (Exception e) {
-            System.out.println("Error al iniciar sesión: " + e.getMessage());
+            System.out.println("Error al iniciar sesion: " + e.getMessage());
             return false;
         }
     }
@@ -82,7 +82,7 @@ public class BancoDAO {
 
     public void depositar(int idCuenta, double monto) {
         if (monto <= 0) {
-            System.out.println("El monto debe ser mayor a 0.");
+            System.out.println("El monto debe ser mayor a 0");
             return;
         }
 
@@ -95,8 +95,8 @@ public class BancoDAO {
             ps.setInt(2, idCuenta);
             ps.executeUpdate();
 
-            registrarMovimiento(idCuenta, "Depósito", monto);
-            System.out.println("Depósito realizado.");
+            registrarMovimiento(idCuenta, "Deposito", monto);
+            System.out.println("Deposito realizado.");
 
         } catch (Exception e) {
             System.out.println("Error al depositar: " + e.getMessage());
@@ -165,10 +165,10 @@ public class BancoDAO {
             ps.setString(4, "Activo");
             ps.executeUpdate();
 
-            System.out.println("Crédito solicitado correctamente.");
+            System.out.println("Credito solicitado correctamente.");
 
         } catch (Exception e) {
-            System.out.println("Error al solicitar crédito: " + e.getMessage());
+            System.out.println("Error al solicitar credito: " + e.getMessage());
         }
     }
 
@@ -182,10 +182,10 @@ public class BancoDAO {
             ps.setInt(2, idCuenta);
             ps.executeUpdate();
 
-            System.out.println("Pago de crédito realizado.");
+            System.out.println("Pago de credito realizado.");
 
         } catch (Exception e) {
-            System.out.println("Error al pagar crédito: " + e.getMessage());
+            System.out.println("Error al pagar credito: " + e.getMessage());
         }
     }
 
@@ -233,7 +233,7 @@ public class BancoDAO {
             while (rs.next()) {
                 String linea = "ID Cuenta: " + rs.getInt("id_cuenta")
                         + ", Cliente: " + rs.getInt("id_cliente")
-                        + ", Número: " + rs.getString("numero_cuenta")
+                        + ", Numero: " + rs.getString("numero_cuenta")
                         + ", Saldo: " + rs.getDouble("saldo");
 
                 cuentas.add(linea);

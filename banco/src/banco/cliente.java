@@ -17,7 +17,7 @@ public class cliente extends Persona {
     @Override
     public void mostrarDatos() {
         System.out.println("Cliente: " + nombre);
-        System.out.println("Teléfono: " + telefono);
+        System.out.println("Telefono: " + telefono);
         System.out.println("Correo: " + correo);
     }
 
