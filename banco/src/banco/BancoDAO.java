@@ -189,20 +189,57 @@ public class BancoDAO {
             System.out.println("Error al solicitar crédito: " + e.getMessage());
         }
     }
-    public void pagarCredito(int idCuenta, double pago) {
-        String sql = "UPDATE credito SET saldo_pendiente = saldo_pendiente - ? WHERE id_cuenta = ? AND estado = 'Activo'";
+public void pagarCredito(int idCuenta, double pago) {
+        if (pago <= 0) {
+            System.out.println("El monto a pagar debe ser mayor a 0.");
+            return;
+        }
+
+        // Obtener el crédito activo y su saldo pendiente actual
+        String sqlBuscar = "SELECT id_credito, saldo_pendiente FROM credito WHERE id_cuenta = ? AND estado = 'Activo'";
 
         try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement psBuscar = con.prepareStatement(sqlBuscar)) {
 
-            ps.setDouble(1, pago);
-            ps.setInt(2, idCuenta);
-            ps.executeUpdate();
+            psBuscar.setInt(1, idCuenta);
+            ResultSet rs = psBuscar.executeQuery();
 
-            System.out.println("Pago de credito realizado.");
+            if (rs.next()) {
+                int idCredito = rs.getInt("id_credito");
+                double saldoPendiente = rs.getDouble("saldo_pendiente");
+
+                // Validación: Evitar pagos excesivos que dejen el saldo en negativo
+                if (pago > saldoPendiente) {
+                    System.out.println("El pago de " + pago + " excede el saldo pendiente (" + saldoPendiente + "). Se ajustará el pago para liquidar la cuenta.");
+                    pago = saldoPendiente; // Ajustamos el pago al total de la deuda restante
+                }
+
+                double nuevoSaldo = saldoPendiente - pago;
+                // Si el saldo llega a 0, pasa a 'Finalizado', de lo contrario se mantiene 'Activo'
+                String nuevoEstado = (nuevoSaldo == 0) ? "Finalizado" : "Activo";
+
+                // Actualizar tanto el saldo pendiente como el estado del crédito en base a su ID único
+                String sqlUpdate = "UPDATE credito SET saldo_pendiente = ?, estado = ? WHERE id_credito = ?";
+                try (PreparedStatement psUpdate = con.prepareStatement(sqlUpdate)) {
+                    psUpdate.setDouble(1, nuevoSaldo);
+                    psUpdate.setString(2, nuevoEstado);
+                    psUpdate.setInt(3, idCredito);
+                    psUpdate.executeUpdate();
+
+                    System.out.println("Pago de crédito realizado correctamente.");
+                    System.out.println("Saldo pendiente actual: " + nuevoSaldo);
+
+                    if (nuevoSaldo == 0) {
+                        System.out.println("¡Crédito totalmente liquidado! El estado ha cambiado a 'Finalizado'.");
+                    }
+                }
+
+            } else {
+                System.out.println("No se encontró ningún crédito activo para esta cuenta.");
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al pagar credito: " + e.getMessage());
+            System.out.println("Error al pagar crédito: " + e.getMessage());
         }
     }
 
