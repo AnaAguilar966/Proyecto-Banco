@@ -153,25 +153,42 @@ public class BancoDAO {
         return 0;
     }
 
-    public void solicitarCredito(int idCuenta, double monto) {
-        String sql = "INSERT INTO credito(id_cuenta, monto, saldo_pendiente, estado) VALUES (?, ?, ?, ?)";
+ public void solicitarCredito(int idCuenta, double monto) {
+        if (monto <= 0) {
+            System.out.println("El monto del crédito debe ser mayor a 0.");
+            return;
+        }
+
+        // Consulta para verificar si ya existe un crédito activo
+        String sqlCheck = "SELECT COUNT(*) FROM credito WHERE id_cuenta = ? AND estado = 'Activo'";
+        String sqlInsert = "INSERT INTO credito(id_cuenta, monto, saldo_pendiente, estado) VALUES (?, ?, ?, ?)";
 
         try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement psCheck = con.prepareStatement(sqlCheck)) {
 
-            ps.setInt(1, idCuenta);
-            ps.setDouble(2, monto);
-            ps.setDouble(3, monto);
-            ps.setString(4, "Activo");
-            ps.executeUpdate();
+            psCheck.setInt(1, idCuenta);
+            ResultSet rs = psCheck.executeQuery();
 
-            System.out.println("Credito solicitado correctamente.");
+            if (rs.next() && rs.getInt(1) > 0) {
+                System.out.println("Error: No se puede solicitar el crédito. Ya tienes un crédito activo actualmente.");
+                return; // Se detiene la ejecución del método
+            }
+
+
+            try (PreparedStatement psInsert = con.prepareStatement(sqlInsert)) {
+                psInsert.setInt(1, idCuenta);
+                psInsert.setDouble(2, monto);
+                psInsert.setDouble(3, monto);
+                psInsert.setString(4, "Activo");
+                psInsert.executeUpdate();
+
+                System.out.println("Crédito solicitado correctamente.");
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al solicitar credito: " + e.getMessage());
+            System.out.println("Error al solicitar crédito: " + e.getMessage());
         }
     }
-
     public void pagarCredito(int idCuenta, double pago) {
         String sql = "UPDATE credito SET saldo_pendiente = saldo_pendiente - ? WHERE id_cuenta = ? AND estado = 'Activo'";
 
