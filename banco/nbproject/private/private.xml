@@ -3,11 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/Banco.java</file>
             <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/conexion.java</file>
             <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/BancoDAO.java</file>
             <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/Persona.java</file>
             <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/cliente.java</file>
+=======
+            <file>file:/C:/Users/ACER/OneDrive/Documents/GitHub/Proyecto-Banco/banco/src/banco/Banco.java</file>
+            <file>file:/C:/Users/ACER/OneDrive/Documents/GitHub/Proyecto-Banco/banco/src/banco/BancoDAO.java</file>
+            <file>file:/C:/Users/ACER/OneDrive/Documents/GitHub/Proyecto-Banco/banco/src/banco/Persona.java</file>
+            <file>file:/C:/Users/ACER/OneDrive/Documents/GitHub/Proyecto-Banco/banco/src/banco/cliente.java</file>
+            <file>file:/C:/Users/ACER/OneDrive/Documents/GitHub/Proyecto-Banco/banco/src/banco/conexion.java</file>
+>>>>>>> c930f2f5e8ed82597879929616bf0f2fc086b2ee
         </group>
     </open-files>
 </project-private>
