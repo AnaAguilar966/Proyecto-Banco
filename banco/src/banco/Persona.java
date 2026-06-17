@@ -1,6 +1,6 @@
 package banco;
 
-public class Persona {
+public  class Persona {
 
     protected int id;
     protected String nombre;
