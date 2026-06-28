@@ -84,7 +84,7 @@ public class ConsultasCuentaA {
 
     public void depositar(int idCuenta, double monto) {
         if (monto <= 0) {
-            System.out.println("El monto debe ser mayor a 0.");
+            System.out.println("ERROR--El monto debe ser mayor a 0.");
             return;
         }
 
@@ -97,8 +97,8 @@ public class ConsultasCuentaA {
             ps.setInt(2, idCuenta);
             ps.executeUpdate();
 
-            new Movimiento().registrarMovimiento(idCuenta, "Deposito", monto);
-            System.out.println("Deposito realizado.");
+            new ConsultasMovimiento().registrarMovimiento(idCuenta, "Deposito", monto);
+            System.out.println("Deposito realizado con exito.");
 
         } catch (Exception e) {
             System.out.println("Error al depositar: " + e.getMessage());
@@ -127,7 +127,7 @@ public class ConsultasCuentaA {
             ps.setInt(2, idCuenta);
             ps.executeUpdate();
 
-            new Movimiento().registrarMovimiento(idCuenta, "Retiro", monto);
+            new ConsultasMovimiento().registrarMovimiento(idCuenta, "Retiro", monto);
             System.out.println("Retiro realizado.");
 
         } catch (Exception e) {

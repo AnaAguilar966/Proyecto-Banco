@@ -69,7 +69,4 @@ public class Movimiento extends Abstracta{
         System.out.println("Fecha:         " + fecha);
     }
 
-    void registrarMovimiento(int idCuenta, String deposito, double monto) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }
