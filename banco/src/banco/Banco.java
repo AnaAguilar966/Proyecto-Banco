@@ -7,7 +7,10 @@ public class Banco {
     public static void main(String[] args) {
 
         Scanner entrada = new Scanner(System.in);
-        BancoDAO dao = new BancoDAO();
+
+        ConsultasCliente clienteDAO = new ConsultasCliente();
+        ConsultasCuentaA cuentaDAO  = new ConsultasCuentaA();
+        ConsultasCredito creditoDAO = new ConsultasCredito();
 
         int opcion;
 
@@ -28,9 +31,9 @@ public class Banco {
                     System.out.print("Ingresa tu numero de cuenta: ");
                     String numeroCuenta = entrada.nextLine();
 
-                    if (dao.iniciarSesion(numeroCuenta)) {
-                        int idCuenta = dao.obtenerIdCuenta(numeroCuenta);
-                        menuCuenta(entrada, dao, idCuenta);
+                    if (cuentaDAO.iniciarSesion(numeroCuenta)) {
+                        int idCuenta = cuentaDAO.obtenerIdCuenta(numeroCuenta);
+                        menuCuenta(entrada, cuentaDAO, creditoDAO, idCuenta);
                     } else {
                         System.out.println("La cuenta no existe.");
                     }
@@ -47,7 +50,7 @@ public class Banco {
                     String correo = entrada.nextLine();
 
                     cliente cliente = new cliente(0, nombre, telefono, correo);
-                    dao.registrarCliente(cliente);
+                    clienteDAO.registrarCliente(cliente);
                     break;
 
                 case 3:
@@ -61,11 +64,11 @@ public class Banco {
                     System.out.print("Saldo inicial: ");
                     double saldo = entrada.nextDouble();
 
-                    dao.crearCuenta(idCliente, numCuenta, saldo);
+                    cuentaDAO.crearCuenta(idCliente, numCuenta, saldo);
                     break;
 
                 case 4:
-                    dao.exportarCuentasTXT();
+                    cuentaDAO.exportarCuentasTXT();
                     break;
 
                 case 5:
@@ -79,7 +82,7 @@ public class Banco {
         } while (opcion != 5);
     }
 
-    public static void menuCuenta(Scanner entrada, BancoDAO dao, int idCuenta) {
+    public static void menuCuenta(Scanner entrada, ConsultasCuentaA cuenta, ConsultasCredito credito, int idCuenta) {
 
         int opcion;
 
@@ -100,34 +103,34 @@ public class Banco {
                 case 1:
                     System.out.print("Monto a depositar: ");
                     double deposito = entrada.nextDouble();
-                    dao.depositar(idCuenta, deposito);
+                    cuenta.depositar(idCuenta, deposito);
                     break;
 
                 case 2:
                     System.out.print("Monto a retirar: ");
                     double retiro = entrada.nextDouble();
-                    dao.retirar(idCuenta, retiro);
+                    cuenta.retirar(idCuenta, retiro);
                     break;
 
                 case 3:
                     System.out.print("Monto del credito: ");
-                    double credito = entrada.nextDouble();
-                    dao.solicitarCredito(idCuenta, credito);
+                    double monto = entrada.nextDouble();
+                    credito.solicitarCredito(idCuenta, monto);
                     break;
 
                 case 4:
                     System.out.print("Monto a pagar: ");
                     double pago = entrada.nextDouble();
-                    dao.pagarCredito(idCuenta, pago);
+                    credito.pagarCredito(idCuenta, pago);
                     break;
 
                 case 5:
-                    double saldo = dao.consultarSaldo(idCuenta);
-                    System.out.println("Saldo actual:" + saldo);
+                    double saldo = cuenta.consultarSaldo(idCuenta);
+                    System.out.println("Saldo actual: " + saldo);
                     break;
 
                 case 6:
-                    dao.eliminarCuenta(idCuenta);
+                    cuenta.eliminarCuenta(idCuenta);
                     opcion = 7;
                     break;
 
