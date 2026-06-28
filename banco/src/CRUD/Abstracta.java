@@ -1,4 +1,4 @@
-package banco;
+package CRUD;
 
 public abstract class Abstracta {
 

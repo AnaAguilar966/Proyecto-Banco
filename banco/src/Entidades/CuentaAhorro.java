@@ -1,4 +1,6 @@
-package banco;
+package Entidades;
+
+import CRUD.Abstracta;
 
 
 public class CuentaAhorro extends Abstracta{

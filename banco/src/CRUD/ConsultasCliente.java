@@ -1,5 +1,7 @@
-package banco;
+package CRUD;
 
+import Entidades.cliente;
+import conexion.conexion;
 import java.sql.*;
 
 public class ConsultasCliente{
