@@ -2,126 +2,109 @@ package vistas;
 
 import crud.ConsultasCuentaA;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class FrmTransacciones extends JFrame {
-    
-    // Elementos de la ventana
-    private JTextField txtNumCuenta;
-    private JTextField txtMonto;
-    private JButton btnIniciar;
-    private JButton btnDepositar;
-    private JButton btnRetirar;
-    private JButton btnSaldo;
-    private JButton btnRegresar;
-    
-    // Variables para controlar la sesión
+
+    private JTextField txtNumCuenta, txtMonto;
+    private JButton btnIniciar, btnDepositar, btnRetirar, btnSaldo, btnRegresar;
     private int idCuentaActiva = -1;
-    private ConsultasCuentaA dao;
+    private ConsultasCuentaA dao = new ConsultasCuentaA();
 
     public FrmTransacciones() {
-        dao = new ConsultasCuentaA();
-        
-        setTitle("Cajero y Transacciones");
-        setSize(400, 300);
+        setTitle("Cajero Automático");
+        setSize(400, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(6, 2, 10, 10));
 
-        // 1. Fila de Inicio de Sesión
-        add(new JLabel(" Ingrese Número de Cuenta:"));
+        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 15));
+        panel.setBackground(new Color(30, 39, 46));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        setContentPane(panel);
+
+        Color textoColor = Color.WHITE;
+
+        panel.add(new JLabel(" Número de Cuenta:")).setForeground(textoColor);
         txtNumCuenta = new JTextField();
-        add(txtNumCuenta);
+        panel.add(txtNumCuenta);
 
         btnIniciar = new JButton("Iniciar Sesión");
-        add(btnIniciar);
-        add(new JLabel(" (Requiere inicio de sesión)"));
+        btnIniciar.setBackground(new Color(72, 84, 96));
+        btnIniciar.setForeground(textoColor);
+        panel.add(btnIniciar);
+        panel.add(new JLabel(""));
 
-        // 2. Fila del Monto
-        add(new JLabel(" Monto a Transaccionar:"));
+        panel.add(new JLabel(" Monto de Operación:")).setForeground(textoColor);
         txtMonto = new JTextField();
-        txtMonto.setEnabled(false); // Bloqueado hasta que inicie sesión
-        add(txtMonto);
+        txtMonto.setEnabled(false);
+        panel.add(txtMonto);
 
-        // 3. Botones de transacciones (Bloqueados por defecto)
         btnDepositar = new JButton("Depositar");
-        btnRetirar = new JButton("Retirar");
+        btnDepositar.setBackground(new Color(11, 232, 129));
         btnDepositar.setEnabled(false);
+        btnRetirar = new JButton("Retirar");
+        btnRetirar.setBackground(new Color(255, 165, 2));
         btnRetirar.setEnabled(false);
-        add(btnDepositar);
-        add(btnRetirar);
+        panel.add(btnDepositar);
+        panel.add(btnRetirar);
 
-        // 4. Botones finales
         btnSaldo = new JButton("Consultar Saldo");
+        btnSaldo.setBackground(new Color(0, 151, 230));
+        btnSaldo.setForeground(textoColor);
         btnSaldo.setEnabled(false);
-        add(btnSaldo);
-        
-        btnRegresar = new JButton("Regresar al Menú");
-        add(btnRegresar);
+        panel.add(btnSaldo);
 
-        // --- ASIGNACIÓN DE EVENTOS ---
+        btnRegresar = new JButton("Regresar");
+        btnRegresar.setBackground(new Color(255, 71, 87));
+        btnRegresar.setForeground(textoColor);
+        panel.add(btnRegresar);
+
         btnIniciar.addActionListener(e -> iniciarSesion());
-        
-        btnDepositar.addActionListener(e -> {
-            if (validarMonto()) {
-                double monto = Double.parseDouble(txtMonto.getText());
-                dao.depositar(idCuentaActiva, monto);
-                JOptionPane.showMessageDialog(this, "Depósito procesado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                txtMonto.setText(""); // Limpiar la caja
-            }
-        });
-        
-        btnRetirar.addActionListener(e -> {
-            if (validarMonto()) {
-                double monto = Double.parseDouble(txtMonto.getText());
-                dao.retirar(idCuentaActiva, monto);
-                JOptionPane.showMessageDialog(this, "Retiro procesado. Revisa tu saldo para confirmar.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                txtMonto.setText(""); // Limpiar la caja
-            }
-        });
-        
-        btnSaldo.addActionListener(e -> {
-            double saldo = dao.consultarSaldo(idCuentaActiva);
-            JOptionPane.showMessageDialog(this, "Tu saldo actual es: $" + saldo, "Consulta de Saldo", JOptionPane.INFORMATION_MESSAGE);
-        });
-        
+        btnDepositar.addActionListener(e -> procesarTransaccion("deposito"));
+        btnRetirar.addActionListener(e -> procesarTransaccion("retiro"));
+        btnSaldo.addActionListener(e -> consultarSaldo());
         btnRegresar.addActionListener(e -> dispose());
     }
 
-    // Método para validar que la cuenta exista
     private void iniciarSesion() {
         String num = txtNumCuenta.getText();
-        
         if (dao.iniciarSesion(num)) {
             idCuentaActiva = dao.obtenerIdCuenta(num);
-            JOptionPane.showMessageDialog(this, "Sesión iniciada. Ya puedes realizar operaciones.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
-            // Bloquear caja de cuenta para que no la cambien
+            JOptionPane.showMessageDialog(this, "Sesión iniciada. Ya puedes operar.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             txtNumCuenta.setEnabled(false);
             btnIniciar.setEnabled(false);
-            
-            // Desbloquear los controles del cajero
             txtMonto.setEnabled(true);
             btnDepositar.setEnabled(true);
             btnRetirar.setEnabled(true);
             btnSaldo.setEnabled(true);
         } else {
-            JOptionPane.showMessageDialog(this, "La cuenta no existe en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "La cuenta no existe.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Método para evitar que metan letras o números negativos
-    private boolean validarMonto() {
+    private void procesarTransaccion(String tipo) {
         try {
-            double m = Double.parseDouble(txtMonto.getText());
-            if (m <= 0) {
-                JOptionPane.showMessageDialog(this, "El monto debe ser mayor a 0.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return false;
+            double monto = Double.parseDouble(txtMonto.getText());
+            if (monto <= 0) {
+                throw new Exception();
             }
-            return true;
+
+            if (tipo.equals("deposito")) {
+                dao.depositar(idCuentaActiva, monto);
+                JOptionPane.showMessageDialog(this, "Depósito procesado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                dao.retirar(idCuentaActiva, monto);
+                JOptionPane.showMessageDialog(this, "Retiro procesado. Si el saldo no cambió, no tenías fondos suficientes.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            }
+            txtMonto.setText("");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Ingresa un monto numérico válido.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            JOptionPane.showMessageDialog(this, "Ingresa un monto válido mayor a 0.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void consultarSaldo() {
+        double saldo = dao.consultarSaldo(idCuentaActiva);
+        JOptionPane.showMessageDialog(this, "Tu saldo actual es: $" + saldo, "Saldo", JOptionPane.INFORMATION_MESSAGE);
     }
 }

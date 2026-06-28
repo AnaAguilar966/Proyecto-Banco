@@ -1,28 +1,23 @@
-package Entidades;
+package entidades;
 
-import CRUD.Abstracta;
+public class CuentaAhorro extends Abstracta {
 
-
-public class CuentaAhorro extends Abstracta{
-
-    // Atributos
     private int idCuenta;
     private int idCliente;
     private String numeroCuenta;
     private double saldo;
 
-    // Constructor vacío
+    // 1. Constructor vacío
     public CuentaAhorro() {
     }
 
-    // Constructor con todos los atributos
+    // 2. Constructor con parámetros
     public CuentaAhorro(int idCuenta, int idCliente, String numeroCuenta, double saldo) {
         this.idCuenta = idCuenta;
         this.idCliente = idCliente;
         this.numeroCuenta = numeroCuenta;
         this.saldo = saldo;
     }
-   
 
     // Getters y Setters
     public int getIdCuenta() {
@@ -57,13 +52,9 @@ public class CuentaAhorro extends Abstracta{
         this.saldo = saldo;
     }
 
-
-     @Override
-    public void mostrarDatos() {
-        System.out.println("===== CUENTA DE AHORRO =====");
-        System.out.println("ID Cuenta:      " + idCuenta);
-        System.out.println("ID Cliente:     " + idCliente);
-        System.out.println("Num. Cuenta:    " + numeroCuenta);
-        System.out.println("Saldo:          " + saldo);
+    // Implementación obligatoria del método de la clase Abstracta
+    @Override
+    public String obtenerDetalles() {
+        return "Cuenta No: " + numeroCuenta + " - Saldo: $" + saldo;
     }
 }

@@ -1,35 +1,31 @@
-package Entidades;
+package entidades;
 
-import CRUD.Abstracta;
+public class cliente extends Abstracta {
 
-public class cliente extends Abstracta{
-
-    // Atributos
-    private int idCliente;
+    private int id;
     private String nombre;
     private String telefono;
     private String correo;
 
-    // Constructor vacío
+    // 1. Constructor vacío
     public cliente() {
     }
 
-    // Constructor con todos los atributos
-    public cliente(int idCliente, String nombre, String telefono, String correo) {
-        this.idCliente = idCliente;
+    // 2. Constructor con parámetros
+    public cliente(int id, String nombre, String telefono, String correo) {
+        this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
         this.correo = correo;
     }
 
-
     // Getters y Setters
-    public int getIdCliente() {
-        return idCliente;
+    public int getId() {
+        return id;
     }
 
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -56,12 +52,9 @@ public class cliente extends Abstracta{
         this.correo = correo;
     }
 
-      @Override
-    public void mostrarDatos() {
-        System.out.println("===== CLIENTE =====");
-        System.out.println("ID:       " + idCliente);
-        System.out.println("Nombre:   " + nombre);
-        System.out.println("Telefono: " + telefono);
-        System.out.println("Correo:   " + correo);
+    // Implementación obligatoria del método de la clase Abstracta
+    @Override
+    public String obtenerDetalles() {
+        return "Cliente: " + nombre + " - Correo: " + correo;
     }
 }

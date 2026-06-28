@@ -1,10 +1,4 @@
-<<<<<<<< HEAD:banco/src/entidades/Movimiento.java
 package entidades;
-========
-package Entidades;
-
-import CRUD.Abstracta;
->>>>>>>> ede572577921217e9399ff9535256ce09c1143f9:banco/src/Entidades/Movimiento.java
 
 public class Movimiento extends Abstracta {
 
@@ -12,12 +6,14 @@ public class Movimiento extends Abstracta {
     private int idCuenta;
     private String tipo;
     private double monto;
-    private int fecha; // Mantengo el int como lo tenías estructurado originalmente
+    private String fecha;
 
+    // 1. Constructor vacío
     public Movimiento() {
     }
 
-    public Movimiento(int idMovimiento, int idCuenta, String tipo, double monto, int fecha) {
+    // 2. Constructor con parámetros
+    public Movimiento(int idMovimiento, int idCuenta, String tipo, double monto, String fecha) {
         this.idMovimiento = idMovimiento;
         this.idCuenta = idCuenta;
         this.tipo = tipo;
@@ -25,6 +21,7 @@ public class Movimiento extends Abstracta {
         this.fecha = fecha;
     }
 
+    // Getters y Setters
     public int getIdMovimiento() {
         return idMovimiento;
     }
@@ -57,21 +54,17 @@ public class Movimiento extends Abstracta {
         this.monto = monto;
     }
 
-    public int getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(int fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
+    // Implementación obligatoria del método de la clase Abstracta
     @Override
-    public void mostrarDatos() {
-        System.out.println("===== MOVIMIENTO =====");
-        System.out.println("ID Movimiento: " + idMovimiento);
-        System.out.println("ID Cuenta:     " + idCuenta);
-        System.out.println("Tipo:          " + tipo);
-        System.out.println("Monto:         " + monto);
-        System.out.println("Fecha:         " + fecha);
+    public String obtenerDetalles() {
+        return "Movimiento: " + tipo + " por $" + monto + " el " + fecha;
     }
 }

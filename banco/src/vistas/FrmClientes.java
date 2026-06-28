@@ -3,78 +3,76 @@ package vistas;
 import crud.ConsultasCliente;
 import entidades.cliente;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class FrmClientes extends JFrame {
-    
-    // Elementos de la ventana
-    private JTextField txtNombre;
-    private JTextField txtTelefono;
-    private JTextField txtCorreo;
-    private JButton btnGuardar;
-    private JButton btnRegresar;
+
+    private JTextField txtNombre, txtTelefono, txtCorreo;
+    private JButton btnGuardar, btnRegresar;
 
     public FrmClientes() {
-        // Configuración básica de la ventana
-        setTitle("Gestión de Clientes");
-        setSize(350, 250);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cierra solo esta ventana
-        setLocationRelativeTo(null); // Centra la ventana en la pantalla
-        setLayout(new GridLayout(5, 2, 10, 10)); // Cuadrícula para acomodar todo
+        setTitle("Registro de Clientes");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // Agregando los textos y las cajas de texto
-        add(new JLabel(" Nombre Completo:"));
+        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 20));
+        panel.setBackground(new Color(30, 39, 46));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        setContentPane(panel);
+
+        Color textoColor = Color.WHITE;
+
+        JLabel lbl1 = new JLabel("Nombre Completo:");
+        lbl1.setForeground(textoColor);
+        JLabel lbl2 = new JLabel("Teléfono:");
+        lbl2.setForeground(textoColor);
+        JLabel lbl3 = new JLabel("Correo Electrónico:");
+        lbl3.setForeground(textoColor);
+
         txtNombre = new JTextField();
-        add(txtNombre);
-
-        add(new JLabel(" Teléfono:"));
         txtTelefono = new JTextField();
-        add(txtTelefono);
-
-        add(new JLabel(" Correo Electrónico:"));
         txtCorreo = new JTextField();
-        add(txtCorreo);
 
-        // Agregando los botones
         btnGuardar = new JButton("Guardar Cliente");
-        btnRegresar = new JButton("Regresar al Menú");
+        btnGuardar.setBackground(new Color(11, 232, 129));
 
-        add(btnGuardar);
-        add(btnRegresar);
+        btnRegresar = new JButton("Regresar");
+        btnRegresar.setBackground(new Color(72, 84, 96));
+        btnRegresar.setForeground(Color.WHITE);
 
-        // Funcionalidad del botón Guardar
+        panel.add(lbl1);
+        panel.add(txtNombre);
+        panel.add(lbl2);
+        panel.add(txtTelefono);
+        panel.add(lbl3);
+        panel.add(txtCorreo);
+        panel.add(btnGuardar);
+        panel.add(btnRegresar);
+
         btnGuardar.addActionListener(e -> guardarCliente());
-
-        // Funcionalidad del botón Regresar
         btnRegresar.addActionListener(e -> dispose());
     }
 
-    // Método que se ejecuta al darle clic a "Guardar Cliente"
     private void guardarCliente() {
         String nombre = txtNombre.getText();
         String telefono = txtTelefono.getText();
         String correo = txtCorreo.getText();
 
-        // Validar que no haya campos vacíos
         if (nombre.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor llena todos los campos.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Crear el objeto cliente y mandarlo a la base de datos
-        cliente nuevoCliente = new cliente(0, nombre, telefono, correo);
-        ConsultasCliente dao = new ConsultasCliente();
-        
-        int idGenerado = dao.registrarCliente(nuevoCliente);
-        
-        if (idGenerado != -1) {
-            JOptionPane.showMessageDialog(this, "Cliente registrado con éxito.\nTu ID es: " + idGenerado, "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            // Limpiar las cajas para registrar otro
-            txtNombre.setText("");
-            txtTelefono.setText("");
-            txtCorreo.setText("");
+        cliente c = new cliente(0, nombre, telefono, correo);
+        int idGenerado = new ConsultasCliente().registrarCliente(c);
+
+        if (idGenerado > 0) {
+            JOptionPane.showMessageDialog(this, "Cliente registrado.\nSu ID para crear cuentas es: " + idGenerado, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Error al registrar en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al guardar en base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:banco/src/crud/ConsultasCuentaA.java
 package crud;
-========
-package CRUD;
->>>>>>>> ede572577921217e9399ff9535256ce09c1143f9:banco/src/CRUD/ConsultasCuentaA.java
 
 import conexion.conexion;
 import java.sql.*;
@@ -15,8 +11,7 @@ public class ConsultasCuentaA {
     public void crearCuenta(int idCliente, String numeroCuenta, double saldo) {
         String sql = "INSERT INTO cuenta_ahorro(id_cliente, numero_cuenta, saldo) VALUES (?, ?, ?)";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idCliente);
             ps.setString(2, numeroCuenta);
@@ -30,11 +25,11 @@ public class ConsultasCuentaA {
         }
     }
 
+    // Valida que el número de cuenta ingresado exista
     public boolean iniciarSesion(String numeroCuenta) {
         String sql = "SELECT * FROM cuenta_ahorro WHERE numero_cuenta = ?";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, numeroCuenta);
             ResultSet rs = ps.executeQuery();
@@ -47,11 +42,11 @@ public class ConsultasCuentaA {
         }
     }
 
+    // Obtiene el ID interno de la base de datos basado en el número de cuenta
     public int obtenerIdCuenta(String numeroCuenta) {
         String sql = "SELECT id_cuenta FROM cuenta_ahorro WHERE numero_cuenta = ?";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, numeroCuenta);
             ResultSet rs = ps.executeQuery();
@@ -70,8 +65,7 @@ public class ConsultasCuentaA {
     public double consultarSaldo(int idCuenta) {
         String sql = "SELECT saldo FROM cuenta_ahorro WHERE id_cuenta = ?";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idCuenta);
             ResultSet rs = ps.executeQuery();
@@ -89,20 +83,18 @@ public class ConsultasCuentaA {
 
     public void depositar(int idCuenta, double monto) {
         if (monto <= 0) {
-            System.out.println("ERROR--El monto debe ser mayor a 0.");
             return;
         }
 
         String sql = "UPDATE cuenta_ahorro SET saldo = saldo + ? WHERE id_cuenta = ?";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setDouble(1, monto);
             ps.setInt(2, idCuenta);
             ps.executeUpdate();
 
-            // Aquí se llama automáticamente a tu otra clase de consultas
+            // Llama automáticamente a la clase de movimientos para registrar la acción
             new ConsultasMovimiento().registrarMovimiento(idCuenta, "Deposito", monto);
             System.out.println("Deposito realizado con exito.");
 
@@ -114,20 +106,13 @@ public class ConsultasCuentaA {
     public void retirar(int idCuenta, double monto) {
         double saldo = consultarSaldo(idCuenta);
 
-        if (monto <= 0) {
-            System.out.println("El monto debe ser mayor a 0.");
-            return;
-        }
-
-        if (monto > saldo) {
-            System.out.println("Saldo insuficiente.");
+        if (monto <= 0 || monto > saldo) {
             return;
         }
 
         String sql = "UPDATE cuenta_ahorro SET saldo = saldo - ? WHERE id_cuenta = ?";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setDouble(1, monto);
             ps.setInt(2, idCuenta);
@@ -144,8 +129,7 @@ public class ConsultasCuentaA {
     public void eliminarCuenta(int idCuenta) {
         String sql = "DELETE FROM cuenta_ahorro WHERE id_cuenta = ?";
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idCuenta);
             ps.executeUpdate();
@@ -162,15 +146,13 @@ public class ConsultasCuentaA {
 
         List<String> cuentas = new ArrayList<>();
 
-        try (Connection con = conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection con = conexion.getConexion(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 String linea = "ID Cuenta: " + rs.getInt("id_cuenta")
-                        + ", Cliente: "  + rs.getInt("id_cliente")
-                        + ", Numero: "   + rs.getString("numero_cuenta")
-                        + ", Saldo: "    + rs.getDouble("saldo");
+                        + ", ID Cliente: " + rs.getInt("id_cliente")
+                        + ", Numero Cuenta: " + rs.getString("numero_cuenta")
+                        + ", Saldo: $" + rs.getDouble("saldo");
                 cuentas.add(linea);
             }
 

@@ -1,10 +1,4 @@
-<<<<<<<< HEAD:banco/src/entidades/Credito.java
 package entidades;
-========
-package Entidades;
-
-import CRUD.Abstracta;
->>>>>>>> ede572577921217e9399ff9535256ce09c1143f9:banco/src/Entidades/Credito.java
 
 public class Credito extends Abstracta {
 
@@ -14,9 +8,11 @@ public class Credito extends Abstracta {
     private double saldoPendiente;
     private String estado;
 
+    // 1. Constructor vacío
     public Credito() {
     }
 
+    // 2. Constructor con parámetros
     public Credito(int idCredito, int idCuenta, double monto, double saldoPendiente, String estado) {
         this.idCredito = idCredito;
         this.idCuenta = idCuenta;
@@ -25,6 +21,7 @@ public class Credito extends Abstracta {
         this.estado = estado;
     }
 
+    // Getters y Setters
     public int getIdCredito() {
         return idCredito;
     }
@@ -65,13 +62,9 @@ public class Credito extends Abstracta {
         this.estado = estado;
     }
 
+    // Implementación obligatoria del método de la clase Abstracta
     @Override
-    public void mostrarDatos() {
-        System.out.println("===== CREDITO =====");
-        System.out.println("ID Credito:      " + idCredito);
-        System.out.println("ID Cuenta:       " + idCuenta);
-        System.out.println("Monto:           " + monto);
-        System.out.println("Saldo Pendiente: " + saldoPendiente);
-        System.out.println("Estado:          " + estado);
+    public String obtenerDetalles() {
+        return "Crédito de $" + monto + " - Estado: " + estado;
     }
 }

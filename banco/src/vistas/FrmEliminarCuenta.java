@@ -11,7 +11,7 @@ public class FrmEliminarCuenta extends JFrame {
     private JButton btnEliminar, btnRegresar;
 
     public FrmEliminarCuenta() {
-        setTitle("🗑️ Cancelación de Cuenta");
+        setTitle("Cancelación de Cuenta");
         setSize(350, 200);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -45,19 +45,16 @@ public class FrmEliminarCuenta extends JFrame {
             int id = Integer.parseInt(txtIdCuenta.getText());
             ConsultasCredito daoCredito = new ConsultasCredito();
 
-            // 1. REGLA DE NEGOCIO: Validar si debe dinero
             if (daoCredito.tieneCreditoActivo(id)) {
                 JOptionPane.showMessageDialog(this, 
-                    "⚠️ ALERTA: Antes de eliminar la cuenta, necesita pagar su crédito activo.", 
+                    "ALERTA: Antes de eliminar la cuenta, necesita pagar su crédito activo.", 
                     "Crédito Pendiente", JOptionPane.WARNING_MESSAGE);
                 
-                // Abre la ventana de pagar créditos automáticamente
                 new FrmAbonarCredito().setVisible(true);
-                this.dispose(); // Cierra esta ventana
+                this.dispose(); 
                 return;
             }
 
-            // 2. Si no debe nada, confirmar y eliminar
             int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea borrar esta cuenta y sus movimientos?", "Confirmar", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 new ConsultasCuentaA().eliminarCuenta(id);
