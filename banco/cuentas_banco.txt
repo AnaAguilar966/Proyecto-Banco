@@ -1,2 +1,1 @@
-ID Cuenta: 1, Cliente: 1, Numero: 1w23, Saldo: 108.0
-ID Cuenta: 2, Cliente: 2, Numero: qwe, Saldo: 222.0
+ID Cuenta: 4, ID Cliente: 1, Numero Cuenta: 123456789, Saldo: $600.0
