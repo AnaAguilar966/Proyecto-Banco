@@ -1,0 +1,38 @@
+package entidades;
+
+public class cliente extends Abstracta {
+    private int idCliente;
+    private String nombre;
+    private String telefono;
+    private String correo;
+
+    public cliente() {}
+
+    public cliente(int idCliente, String nombre, String telefono, String correo) {
+        this.idCliente = idCliente;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.correo = correo;
+    }
+
+    public int getIdCliente() { return idCliente; }
+    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+
+    @Override
+    public void mostrarDatos() {
+        System.out.println("===== CLIENTE =====");
+        System.out.println("ID:       " + idCliente);
+        System.out.println("Nombre:   " + nombre);
+        System.out.println("Telefono: " + telefono);
+        System.out.println("Correo:   " + correo);
+    }
+}
