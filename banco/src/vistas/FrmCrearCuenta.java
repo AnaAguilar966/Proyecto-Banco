@@ -17,7 +17,6 @@ public class FrmCrearCuenta extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Cambiamos a 3 filas porque eliminamos el input manual de cuenta
         JPanel panel = new JPanel(new GridLayout(3, 2, 10, 20));
         panel.setBackground(new Color(30, 39, 46));
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -61,15 +60,33 @@ public class FrmCrearCuenta extends JFrame {
                 return;
             }
 
+            ConsultasCuentaA daoCuenta = new ConsultasCuentaA();
+
+            // === REGLA 1: Validar si el cliente existe ===
+            if (!daoCuenta.existeCliente(idCliente)) {
+                JOptionPane.showMessageDialog(this, 
+                    "ERROR: El Cliente con ID " + idCliente + " NO existe.\nRegistre al cliente primero en el Módulo de Clientes.", 
+                    "Cliente No Encontrado", JOptionPane.ERROR_MESSAGE);
+                return; 
+            }
+
+            // === REGLA 2: Validar si ya tiene cuenta ===
+            if (daoCuenta.tieneCuenta(idCliente)) {
+                JOptionPane.showMessageDialog(this, 
+                    "ERROR: Este cliente ya tiene una cuenta de ahorro activa.", 
+                    "Cuenta Duplicada", JOptionPane.ERROR_MESSAGE);
+                return; 
+            }
+
+            // === SI PASA LAS VALIDACIONES, SE CREA LA CUENTA ===
             CuentaAhorro nuevaCuenta = new CuentaAhorro();
             nuevaCuenta.setIdCliente(idCliente);
             nuevaCuenta.setSaldo(saldo);
 
-            ConsultasCuentaA daoCuenta = new ConsultasCuentaA();
             int nuevoIdCuenta = daoCuenta.registrarCuenta(nuevaCuenta);
 
             if (nuevoIdCuenta != -1) {
-                // Aquí aplicamos el formato autoincrementable visual
+                // Formato autoincrementable visual
                 String numeroCuentaFormateado = String.format("%010d", nuevoIdCuenta);
                 String mensaje = "¡Cuenta Aperturada Exitosamente!\n\n"
                                + "ID Cliente (Propietario): " + idCliente + "\n"
@@ -81,7 +98,7 @@ public class FrmCrearCuenta extends JFrame {
                 txtIdCliente.setText("");
                 txtSaldo.setText("");
             } else {
-                JOptionPane.showMessageDialog(this, "Error al registrar la cuenta. Verifique que el ID del cliente exista.", "Error BD", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al registrar la cuenta. Verifique la base de datos.", "Error BD", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese valores numéricos válidos.", "Error de Formato", JOptionPane.WARNING_MESSAGE);
