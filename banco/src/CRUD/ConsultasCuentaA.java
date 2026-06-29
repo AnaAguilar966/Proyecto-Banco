@@ -11,11 +11,11 @@ import java.sql.Statement;
 
 public class ConsultasCuentaA {
 
-    // 1. Método de apertura con ID auto-generado
+// 1. Método de apertura con ID auto-generado y Número de Cuenta con ceros
     public int registrarCuenta(CuentaAhorro c) {
-        String sql = "INSERT INTO cuenta_ahorro (id_cliente, saldo) VALUES (?, ?)";
+        String sqlInsert = "INSERT INTO cuenta_ahorro (id_cliente, saldo) VALUES (?, ?)";
         try (Connection con = conexion.getConexion(); 
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setInt(1, c.getIdCliente());
             ps.setDouble(2, c.getSaldo());
@@ -25,7 +25,19 @@ public class ConsultasCuentaA {
             if (filasAfectadas > 0) {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
-                        return rs.getInt(1); // Devuelve el ID generado por MySQL
+                        int idGenerado = rs.getInt(1); // MySQL nos da el ID real (ej. 1)
+                        
+                        // === NUEVO: GUARDAR LOS CEROS EN LA BASE DE DATOS ===
+                        String numeroConCeros = String.format("%010d", idGenerado);
+                        String sqlUpdate = "UPDATE cuenta_ahorro SET numero_cuenta = ? WHERE id_cuenta = ?";
+                        try (PreparedStatement psUpdate = con.prepareStatement(sqlUpdate)) {
+                            psUpdate.setString(1, numeroConCeros);
+                            psUpdate.setInt(2, idGenerado);
+                            psUpdate.executeUpdate(); // Se guardan los ceros en MySQL
+                        }
+                        // =====================================================
+                        
+                        return idGenerado;
                     }
                 }
             }
@@ -34,6 +46,33 @@ public class ConsultasCuentaA {
         }
         return -1; 
     }
+
+    // --- NUEVAS VALIDACIONES DE SEGURIDAD ---
+    public boolean existeCliente(int idCliente) {
+        String sql = "SELECT id_cliente FROM cliente WHERE id_cliente = ?";
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idCliente);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // true si el cliente existe
+        } catch (Exception e) {
+            System.out.println("Error al verificar cliente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean tieneCuenta(int idCliente) {
+        String sql = "SELECT id_cliente FROM cuenta_ahorro WHERE id_cliente = ?";
+        try (Connection con = conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idCliente);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // true si ya tiene cuenta
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    // ----------------------------------------
 
     // 2. Método de seguridad para eliminar
     public boolean eliminarCuenta(int idCuenta) {
@@ -48,8 +87,7 @@ public class ConsultasCuentaA {
         }
     }
 
-    // --- MÉTODOS RESTAURADOS PARA EL CAJERO ---
-
+    // --- MÉTODOS DEL CAJERO ---
     public boolean iniciarSesion(String numCuenta) {
         String sql = "SELECT id_cuenta FROM cuenta_ahorro WHERE id_cuenta = ?";
         try (Connection con = conexion.getConexion(); 
@@ -121,14 +159,13 @@ public class ConsultasCuentaA {
         return 0.0;
     }
 
-public void exportarCuentasTXT() {
+    public void exportarCuentasTXT() {
         String sql = "SELECT id_cuenta, id_cliente, saldo FROM cuenta_ahorro";
         try (Connection con = conexion.getConexion(); 
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery();
              FileWriter writer = new FileWriter("cuentas_banco.txt")) {
             
- 
             while (rs.next()) {
                 String numCuenta = String.format("%010d", rs.getInt("id_cuenta"));
                 writer.write("N. Cuenta: " + numCuenta + 
@@ -136,12 +173,10 @@ public void exportarCuentasTXT() {
                              " | Saldo: $" + rs.getDouble("saldo") + "\n");
             }
             
-          
             java.io.File archivo = new java.io.File("cuentas_banco.txt");
             if (archivo.exists() && java.awt.Desktop.isDesktopSupported()) {
                 java.awt.Desktop.getDesktop().open(archivo); 
             }
-         
             
         } catch (Exception e) {
             System.out.println("Error al exportar o abrir el archivo: " + e.getMessage());
