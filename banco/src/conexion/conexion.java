@@ -9,13 +9,13 @@ public class conexion {
     // Definimos los parámetros de la conexión a la base de datos 'Banco'
     private static final String URL = "jdbc:mysql://localhost:3306/Banco?useSSL=false&serverTimezone=UTC";
     private static final String USUARIO = "root";
-    private static final String CONTRASENA = ""; // Cambia esto si tu MySQL tiene contraseña
+    private static final String CONTRASENA = "root"; 
 
     // Método estático para obtener la conexión desde cualquier otra clase
     public static Connection getConexion() {
         Connection con = null;
         try {
-            // Cargar el driver de MySQL (asegúrate de tener el mysql-connector-java.jar agregado a tus Libraries)
+            // Cargar el driver de MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Establecer la conexión
             con = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
