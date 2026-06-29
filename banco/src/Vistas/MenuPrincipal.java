@@ -8,7 +8,7 @@ import java.awt.*;
 public class MenuPrincipal extends JFrame {
 
     public MenuPrincipal() {
-        setTitle("Sistema de Gestión Bancaria - UNSIJ");
+        setTitle("Sistema de Gestión Bancaria");
         setSize(550, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

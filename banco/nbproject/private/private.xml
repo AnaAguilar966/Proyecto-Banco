@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/Banco.java</file>
-            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/conexion.java</file>
-            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/BancoDAO.java</file>
-            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/Persona.java</file>
-            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/banco/cliente.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/MenuPrincipal.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/FrmClientes.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/FrmCrearCuenta.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/FrmTransacciones.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/FrmSolicitarCredito.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/FrmAbonarCredito.java</file>
+            <file>file:/C:/Users/User/Documents/GitHub/Proyecto-Banco/banco/src/vistas/FrmEliminarCuenta.java</file>
         </group>
     </open-files>
 </project-private>
