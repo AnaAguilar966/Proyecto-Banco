@@ -27,7 +27,7 @@ public class ConsultasCuentaA {
                     if (rs.next()) {
                         int idGenerado = rs.getInt(1); // MySQL nos da el ID real (ej. 1)
                         
-                        // === NUEVO: GUARDAR LOS CEROS EN LA BASE DE DATOS ===
+                    
                         String numeroConCeros = String.format("%010d", idGenerado);
                         String sqlUpdate = "UPDATE cuenta_ahorro SET numero_cuenta = ? WHERE id_cuenta = ?";
                         try (PreparedStatement psUpdate = con.prepareStatement(sqlUpdate)) {
@@ -35,7 +35,7 @@ public class ConsultasCuentaA {
                             psUpdate.setInt(2, idGenerado);
                             psUpdate.executeUpdate(); // Se guardan los ceros en MySQL
                         }
-                        // =====================================================
+                        
                         
                         return idGenerado;
                     }
